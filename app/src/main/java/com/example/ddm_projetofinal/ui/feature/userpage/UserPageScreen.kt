@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,9 +23,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,23 +36,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.usuario1
+import com.example.ddm_projetofinal.ui.components.BottomMenuElement
+import com.example.ddm_projetofinal.ui.components.EmailChangeDialog
+import com.example.ddm_projetofinal.ui.components.NameChangeDialog
+import com.example.ddm_projetofinal.ui.components.PasswordChangeDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UserPageScreen (
-    userInfo: User
+    userInfo: User,
+    onLogOut: () -> Unit
 ) {
+    var emailDialog by remember { mutableStateOf(false) }
+    var nameDialog by remember { mutableStateOf(false) }
+    var passwordDialog by remember { mutableStateOf(false) }
+
     Scaffold (
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .safeDrawingPadding()
+            .safeDrawingPadding(),
+        bottomBar = {
+            BottomMenuElement(2)
+        }
     ) {
         Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(8.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -69,7 +83,7 @@ fun UserPageScreen (
                     .wrapContentHeight()
                     .wrapContentWidth()
                     .padding(8.dp)
-                    .size(80.dp),
+                    .size(120.dp),
                 imageVector = Icons.Default.Person,
                 contentDescription = "Ícone de pessoa",
 
@@ -90,7 +104,7 @@ fun UserPageScreen (
             ) {
                 Column (
                     modifier = Modifier
-                        .padding(14.dp)
+                        .padding(24.dp)
                 ) {
                     Text (
                         text = userInfo.name,
@@ -114,7 +128,7 @@ fun UserPageScreen (
                         fontWeight = FontWeight(750),
                         modifier = Modifier
                             .clickable {
-
+                                passwordDialog = !passwordDialog
                             }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -125,7 +139,7 @@ fun UserPageScreen (
                         fontWeight = FontWeight(750),
                         modifier = Modifier
                             .clickable {
-
+                                emailDialog = !emailDialog
                             }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -136,9 +150,42 @@ fun UserPageScreen (
                         fontWeight = FontWeight(750),
                         modifier = Modifier
                             .clickable {
+                                nameDialog = !nameDialog
+                            }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text (
+                        text = "Sair",
+                        fontSize = 16.sp,
+                        color = Color(0xFFC60000),
+                        fontWeight = FontWeight(750),
+                        modifier = Modifier
+                            .clickable {
 
                             }
                     )
+
+                    if (emailDialog) {
+                        EmailChangeDialog (
+                            userInfo = userInfo,
+                            onDismiss = { emailDialog = false },
+                            onConfirm = {}
+                        )
+                    }
+                    if (nameDialog) {
+                        NameChangeDialog (
+                            userInfo = userInfo,
+                            onDismiss = { nameDialog = false },
+                            onConfirm = {}
+                        )
+                    }
+                    if (passwordDialog) {
+                        PasswordChangeDialog (
+                            userInfo = userInfo,
+                            onDismiss = { passwordDialog = false },
+                            onConfirm = {}
+                        )
+                    }
                 }
             }
         }
@@ -148,5 +195,5 @@ fun UserPageScreen (
 @Preview
 @Composable
 fun UserPageScrenPreview () {
-    UserPageScreen(usuario1)
+    UserPageScreen(usuario1, {})
 }

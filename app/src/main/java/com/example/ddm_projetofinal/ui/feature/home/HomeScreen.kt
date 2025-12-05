@@ -111,7 +111,7 @@ fun HomeScreen (
 
             Spacer( modifier = Modifier.height(16.dp))
 
-            var temporaryExpenses: MutableList<Expense> = mutableListOf(expense1, expense2, expense3, expense4)
+            var temporaryExpenses: MutableList<Expense> = mutableListOf(expense1, expense2, expense3)
             // TODO: Quando estivermos extraindo expenses do banco, adicionar uma lógica pra usar
             // TODO: somente as três mais recentes
             LazyColumn {
