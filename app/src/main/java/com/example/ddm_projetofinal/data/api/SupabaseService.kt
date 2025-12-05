@@ -17,6 +17,11 @@ interface SupabaseService {
         //TODO :: FULL IMPLEMENTATION
     )
 
+    @PATCH("rest/v1/tb_user")
+    suspend fun updateUser (
+        //TODO :: FULL IMPLEMENTATION
+    )
+
     @GET("rest/v1/tb_trip")
     suspend fun getTrips (
         //TODO :: FULL IMPLEMENTATION
