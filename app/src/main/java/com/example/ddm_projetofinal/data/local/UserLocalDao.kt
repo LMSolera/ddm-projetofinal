@@ -15,8 +15,8 @@ interface UserLocalDao {
     @Delete
     suspend fun delete (entity: UserEntityLocal)
 
-    @Query("SELECT * FROM user WHERE email = :email AND password = :password")
-    fun getByLogin(email: String, password: String): UserEntityLocal?
+    @Query("SELECT * FROM user")
+    fun getSavedLogin(): UserEntityLocal?
 
     @Query("SELECT * FROM user WHERE id = :id")
     fun getById(id: String): UserEntityLocal?

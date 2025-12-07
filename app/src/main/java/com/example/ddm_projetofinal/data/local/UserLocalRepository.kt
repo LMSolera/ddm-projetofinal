@@ -7,5 +7,5 @@ interface UserLocalRepository {
 
     suspend fun delete(id: String)
 
-    suspend fun getByLogin(email: String, password: String): User?
+    suspend fun getSavedLogin(): User?
 }

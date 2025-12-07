@@ -23,8 +23,8 @@ class UserLocalRepositoryImpl (
         dao.delete(existingEntity)
     }
 
-    override suspend fun getByLogin(email: String, password: String): User? {
-        return dao.getByLogin(email, password)?.let { entity ->
+    override suspend fun getSavedLogin (): User? {
+        return dao.getSavedLogin()?.let { entity ->
              User (
                  id = entity.id,
                  name = entity.name,
