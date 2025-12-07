@@ -24,6 +24,9 @@ data class TripsRoute (val userId: String, val userName: String, val userEmail: 
 @Serializable
 data class ExpensesRoute (val userId: String, val userName: String, val userEmail: String, val userPassword: String)
 
+@Serializable
+object LogOutRoute
+
 
 @Composable
 fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassword: String) {
@@ -101,7 +104,17 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                         userInfo.password
                     ))
                 },
-                onLogOut = {} // TODO :: Implementar o 'log out' da aplicação
+                onLogOut = {
+                    navController.navigate(LogOutRoute)
+                },
+                onCredentialsUpdate = { userInfo ->
+                    navController.navigate(UserRoute(
+                        userInfo.id,
+                        userInfo.name,
+                        userInfo.email,
+                        userInfo.password
+                    ))
+                }
             )
         }
         composable<TripsRoute> { backStackEntry ->
@@ -173,6 +186,10 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                     ))
                 }
             )
+        }
+
+        composable<LogOutRoute> {
+            NoLoginNavGraph()
         }
     }
 }
