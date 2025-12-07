@@ -41,7 +41,6 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                     homeRoute.userEmail,
                     homeRoute.userPassword
                 ),
-                navigateHome = {},
                 navigateUser = { userInfo ->
                     navController.navigate(UserRoute(
                         userInfo.id,
@@ -86,7 +85,6 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                         userInfo.password
                     ))
                 },
-                navigateUser = {},
                 navigateTrips = { userInfo ->
                     navController.navigate(TripsRoute(
                         userInfo.id,
@@ -131,7 +129,6 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                         userInfo.password
                     ))
                 },
-                navigateTrips = {},
                 navigateExpenses = { userInfo ->
                     navController.navigate(ExpensesRoute(
                         userInfo.id,
@@ -174,8 +171,7 @@ fun MainNavGraph (userId: String, userName: String, userEmail: String, userPassw
                         userInfo.email,
                         userInfo.password
                     ))
-                },
-                navigateExpenses = {}
+                }
             )
         }
     }
