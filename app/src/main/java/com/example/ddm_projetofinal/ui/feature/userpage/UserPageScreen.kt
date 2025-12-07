@@ -48,7 +48,6 @@ fun UserPageScreen (
     userInfo: User,
     onLogOut: () -> Unit,
     navigateHome: (User) -> Unit,
-    navigateUser: (User) -> Unit,
     navigateTrips: (User) -> Unit,
     navigateExpenses: (User) -> Unit,
     viewModel: UserPageViewModel = viewModel()
@@ -208,5 +207,5 @@ fun UserPageScreen (
 @Preview
 @Composable
 fun UserPageScrenPreview () {
-    UserPageScreen(user1, {}, {}, {}, {}, {})
+    UserPageScreen(user1, {}, {}, {}, {})
 }
