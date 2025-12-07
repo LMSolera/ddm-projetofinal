@@ -10,21 +10,21 @@ data class User (
 )
 
 // FOs
-val usuario1 = User (
+val user1 = User (
     id = "5jdosl89",
     name = "Luis Miguel",
     email = "lumi@gmail.com",
     password = "senhaDoLuis"
 )
 
-val usuario2 = User (
+val user2 = User (
     id = "1ldpsmb8",
     name = "Henrique Chaves",
     email = "chaves@gmail.com",
     password = "senhaDoHenrique"
 )
 
-val usuario3 = User (
+val user3 = User (
     id = "aowjg6cb",
     name = "Pedro Oliveira",
     email = "poli@gmail.com",

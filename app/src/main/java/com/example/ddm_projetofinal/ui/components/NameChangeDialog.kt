@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ddm_projetofinal.model.User
-import com.example.ddm_projetofinal.model.usuario1
+import com.example.ddm_projetofinal.model.user1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,5 +110,5 @@ fun NameChangeDialog (
 @Preview
 @Composable
 fun NameChangeDialogPreview () {
-    NameChangeDialog(usuario1, {}, {})
+    NameChangeDialog(user1, {}, {})
 }

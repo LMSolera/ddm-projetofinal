@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ddm_projetofinal.model.User
-import com.example.ddm_projetofinal.model.usuario1
+import com.example.ddm_projetofinal.model.user1
 import com.example.ddm_projetofinal.ui.components.BottomMenuElement
 import com.example.ddm_projetofinal.ui.components.EmailChangeDialog
 import com.example.ddm_projetofinal.ui.components.NameChangeDialog
@@ -195,5 +195,5 @@ fun UserPageScreen (
 @Preview
 @Composable
 fun UserPageScrenPreview () {
-    UserPageScreen(usuario1, {})
+    UserPageScreen(user1, {})
 }
