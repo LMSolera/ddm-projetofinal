@@ -1,5 +1,6 @@
 package com.example.ddm_projetofinal.data.api
 
+import com.example.ddm_projetofinal.data.entity.ExpenseEntity
 import com.example.ddm_projetofinal.data.entity.TripEntity
 import com.example.ddm_projetofinal.data.entity.UserEntity
 import com.example.ddm_projetofinal.model.Trip
@@ -35,13 +36,21 @@ interface SupabaseService {
     ): Response<List<UserEntity>>
 
     @PATCH("rest/v1/tb_user")
+    @Headers("Prefer: return=representation")
     suspend fun updateUser (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("id") id: String,
+        @Body user: Map<String, String>
+    ): Response<List<UserEntity>>
 
     @GET("rest/v1/tb_trip")
     suspend fun getTrips (
         @Query("owner_id") owner_id: String,
+        @Query("select") select: String = "*"
+    ): Response<List<TripEntity>>
+
+    @GET("rest/v1/tb_trip")
+    suspend fun getTripById (
+        @Query("id") id: String,
         @Query("select") select: String = "*"
     ): Response<List<TripEntity>>
 
@@ -65,21 +74,18 @@ interface SupabaseService {
 
     @GET("rest/v1/tb_expense")
     suspend fun getExpenses (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("owner_id") owner_id: String,
+        @Query("select") select: String = "*"
+    ): Response<List<ExpenseEntity>>
 
     @POST("rest/v1/tb_expense")
+    @Headers("Prefer: return=representation")
     suspend fun insertExpense (
-        //TODO :: FULL IMPLEMENTATION
-    )
-
-    @PATCH("rest/v1/tb_expense")
-    suspend fun updateExpense (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Body expenseEntity: ExpenseEntity
+    ): Response<List<ExpenseEntity>>
 
     @DELETE("rest/v1/tb_expense")
     suspend fun deleteExpense (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("id") id: String
+    ): Response<Unit>
 }
