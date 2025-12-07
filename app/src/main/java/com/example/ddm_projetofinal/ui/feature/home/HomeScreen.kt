@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -26,14 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.Expense
+import com.example.ddm_projetofinal.model.Trip
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.expense1
 import com.example.ddm_projetofinal.model.expense2
 import com.example.ddm_projetofinal.model.expense3
-import com.example.ddm_projetofinal.model.expense4
-import com.example.ddm_projetofinal.model.usuario1
+import com.example.ddm_projetofinal.model.trip1
+import com.example.ddm_projetofinal.model.user1
 import com.example.ddm_projetofinal.ui.components.BottomMenuElement
 import com.example.ddm_projetofinal.ui.components.ExpenseCardSmall
+import com.example.ddm_projetofinal.ui.components.TripCard
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -104,6 +107,44 @@ fun HomeScreen (
             Spacer( modifier = Modifier.height(16.dp))
 
             Text (
+                text = "Viagem mais recente",
+                fontSize = 20.sp,
+                fontWeight = FontWeight(1000)
+            )
+
+            Spacer( modifier = Modifier.height(16.dp))
+
+            var viagemMaisRecente: Trip? = null
+            viagemMaisRecente = trip1
+            if (viagemMaisRecente == null) {
+                Card (
+                    border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
+                    colors = CardColors(
+                        Color(0xFFFCF5FD),
+                        Color(0xFF000000),
+                        Color(0xFF000000),
+                        Color(0xFF000000)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text (
+                        modifier = Modifier
+                            .padding(12.dp),
+                        text = "Nenhuma viagem registrada para este usuário...",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(750)
+                    )
+                }
+            } else {
+                TripCard(tripInfo = viagemMaisRecente, {})
+            }
+
+
+            Spacer( modifier = Modifier.height(16.dp))
+
+            Text (
                 text = "Gastos Recentes",
                 fontSize = 20.sp,
                 fontWeight = FontWeight(1000)
@@ -111,20 +152,44 @@ fun HomeScreen (
 
             Spacer( modifier = Modifier.height(16.dp))
 
-            var temporaryExpenses: MutableList<Expense> = mutableListOf(expense1, expense2, expense3)
+            var temporaryExpenses: MutableList<Expense>? = null
+            temporaryExpenses = mutableListOf(expense1, expense2, expense3)
             // TODO: Quando estivermos extraindo expenses do banco, adicionar uma lógica pra usar
             // TODO: somente as três mais recentes
-            LazyColumn {
-                items(
-                    items = temporaryExpenses,
-                    key = { it.id ?: "" }
-                ) { expense ->
-                    ExpenseCardSmall(
-                        expenseInfo = expense,
-                        editEnabled = false,
-                        onEditPress = {}
+            if (temporaryExpenses == null || temporaryExpenses.isEmpty()) {
+                Card (
+                    border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
+                    colors = CardColors(
+                        Color(0xFFFCF5FD),
+                        Color(0xFF000000),
+                        Color(0xFF000000),
+                        Color(0xFF000000)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text (
+                        modifier = Modifier
+                            .padding(12.dp),
+                        text = "Nenhum gasto registrado para este usuário...",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(750)
                     )
-                    Spacer( modifier = Modifier.height(4.dp))
+                }
+            } else {
+                LazyColumn {
+                    items(
+                        items = temporaryExpenses,
+                        key = { it.id ?: "" }
+                    ) { expense ->
+                        ExpenseCardSmall(
+                            expenseInfo = expense,
+                            editEnabled = false,
+                            onEditPress = {}
+                        )
+                        Spacer( modifier = Modifier.height(4.dp))
+                    }
                 }
             }
         }
@@ -134,5 +199,5 @@ fun HomeScreen (
 @Preview
 @Composable
 fun HomeScreenPreview () {
-    HomeScreen (usuario1)
+    HomeScreen (user1)
 }
