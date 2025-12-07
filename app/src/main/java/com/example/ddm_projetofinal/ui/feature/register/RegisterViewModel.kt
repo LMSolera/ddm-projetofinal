@@ -26,7 +26,6 @@ class RegisterViewModel : ViewModel()  {
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
-    var userInfo: User? = null
     var localRepository: UserLocalRepository? = null
 
     var repository = AppRepositoryImpl()
@@ -55,6 +54,7 @@ class RegisterViewModel : ViewModel()  {
                             user = returnedUser,
                             registerSucess = true
                         )
+
                     }.onFailure { exception ->
                         _uiState.value = _uiState.value.copy(errorMessage = "Falha ao tentar registrar novo usuário.")
                         _uiState.value = _uiState.value.copy(isLoading = false)

@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ddm_projetofinal.data.local.UserLocalDatabaseProvider
+import com.example.ddm_projetofinal.data.local.UserLocalRepositoryImpl
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.user1
 
@@ -57,8 +60,16 @@ fun LoginScreen (
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current.applicationContext
+    val localDatabase = UserLocalDatabaseProvider.provide(context)
+    val repository = UserLocalRepositoryImpl (
+        dao = localDatabase.userLocalDao
+    )
+    viewModel.localRepository = repository
 
     val uiState by viewModel.uiState.collectAsState()
+
+    viewModel.checkForCachedLogin()
 
     LaunchedEffect(uiState.loginSucess) {
         if (uiState.loginSucess && uiState.user != null) {

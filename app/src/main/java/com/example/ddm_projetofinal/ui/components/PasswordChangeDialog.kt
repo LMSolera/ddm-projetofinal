@@ -154,7 +154,8 @@ fun PasswordChangeDialog (
                 enabled = if (!oldPassword.isEmpty()
                     && oldPassword.equals(userInfo.password)
                     && !newPassword.isEmpty()
-                    && !newPasswordConfirm.isEmpty())
+                    && !newPasswordConfirm.isEmpty()
+                    && newPassword.equals(newPasswordConfirm))
                 {true} else {false}
             ) {
                 Text("Confirmar")

@@ -19,8 +19,10 @@ class UserLocalRepositoryImpl (
     }
 
     override suspend fun delete(id: String) {
-        val existingEntity = dao.getById(id) ?: return
-        dao.delete(existingEntity)
+        dao.getById(id)?.let {
+            val existingEntity = it
+            dao.delete(existingEntity)
+        }
     }
 
     override suspend fun getSavedLogin (): User? {
