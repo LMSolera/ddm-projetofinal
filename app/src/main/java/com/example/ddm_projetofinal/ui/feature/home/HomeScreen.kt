@@ -53,6 +53,7 @@ fun HomeScreen (
 ) {
     val uiState by viewModel.uiState.collectAsState()
     viewModel.getRecentTrips(userInfo.id)
+    viewModel.getExpenses(userInfo.id)
 
     Scaffold (
         modifier = Modifier
@@ -124,7 +125,7 @@ fun HomeScreen (
             Spacer( modifier = Modifier.height(16.dp))
 
             Text (
-                text = "Viagem criada mais recente",
+                text = "Viagem mais Recente",
                 fontSize = 20.sp,
                 fontWeight = FontWeight(1000)
             )
@@ -194,7 +195,15 @@ fun HomeScreen (
             } else {
                 LazyColumn {
                     items(
-                        items = uiState.recentExpenses,
+                        items = if (uiState.recentExpenses.size >= 3 ) {
+                            listOf(
+                                uiState.recentExpenses.get(0),
+                                uiState.recentExpenses.get(1),
+                                uiState.recentExpenses.get(2)
+                            )
+                        } else {
+                            uiState.recentExpenses
+                        },
                         key = { it.id ?: "" }
                     ) { expense ->
                         ExpenseCardSmall(

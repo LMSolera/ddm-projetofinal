@@ -39,4 +39,20 @@ class HomeViewModel : ViewModel() {
             _uiState.value = _uiState.value.copy(isLoading = false)
         }
     }
+
+    fun getExpenses (userId: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            val searchResult = repository.getExpensesByUser(userId)
+
+            searchResult.onSuccess { expenses ->
+                _uiState.value = _uiState.value.copy(
+                    recentExpenses = expenses,
+                    isLoading = false
+                )
+            }
+            _uiState.value = _uiState.value.copy(isLoading = false)
+        }
+    }
 }
