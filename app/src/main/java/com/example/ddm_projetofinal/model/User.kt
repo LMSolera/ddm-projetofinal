@@ -1,5 +1,8 @@
 package com.example.ddm_projetofinal.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User (
     // Identificador
     val id: String,

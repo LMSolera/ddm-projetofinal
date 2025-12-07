@@ -42,6 +42,10 @@ import com.example.ddm_projetofinal.ui.components.TripCard
 @Composable
 fun HomeScreen (
     userInfo: User,
+    navigateHome: (User) -> Unit,
+    navigateUser: (User) -> Unit,
+    navigateTrips: (User) -> Unit,
+    navigateExpenses: (User) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     Scaffold (
@@ -50,7 +54,14 @@ fun HomeScreen (
             .fillMaxHeight()
             .safeDrawingPadding(),
         bottomBar = {
-            BottomMenuElement(1)
+            BottomMenuElement(
+                disabledIndex = 1,
+                userInfo = userInfo,
+                navigateHome = {},
+                navigateUser = { navigateUser(userInfo) },
+                navigateTrips = { navigateTrips(userInfo) },
+                navigateExpenses = { navigateExpenses(userInfo) }
+            )
         }
     ) {
         Column (
@@ -138,7 +149,7 @@ fun HomeScreen (
                     )
                 }
             } else {
-                TripCard(tripInfo = viagemMaisRecente, {})
+                TripCard(tripInfo = viagemMaisRecente, {}, false)
             }
 
 
@@ -199,5 +210,5 @@ fun HomeScreen (
 @Preview
 @Composable
 fun HomeScreenPreview () {
-    HomeScreen (user1)
+    HomeScreen (user1, {}, {}, {}, {})
 }

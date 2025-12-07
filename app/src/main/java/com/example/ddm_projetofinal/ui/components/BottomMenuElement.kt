@@ -22,10 +22,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.ddm_projetofinal.model.User
+import com.example.ddm_projetofinal.model.user1
 
 @Composable
 fun BottomMenuElement (
-    disabledIndex: Int
+    disabledIndex: Int,
+    userInfo: User,
+    navigateHome: (User) -> Unit = {},
+    navigateUser: (User) -> Unit = {},
+    navigateTrips: (User) -> Unit = {},
+    navigateExpenses: (User) -> Unit = {},
 ) {
     Surface (
         modifier = Modifier
@@ -51,7 +58,9 @@ fun BottomMenuElement (
             val tintEnabled: Color = Color(0xFF818181)
             val tintDisabled: Color = Color(0xFF000000)
             IconButton (
-                onClick = {},
+                onClick = {
+                    navigateHome(userInfo)
+                },
                 enabled = if (disabledIndex == 1) false else true
             ) {
                 Icon (
@@ -63,7 +72,9 @@ fun BottomMenuElement (
                 )
             }
             IconButton (
-                onClick = {},
+                onClick = {
+                    navigateUser(userInfo)
+                },
                 enabled = if (disabledIndex == 2) false else true
             ) {
                 Icon (
@@ -75,7 +86,9 @@ fun BottomMenuElement (
                 )
             }
             IconButton (
-                onClick = {},
+                onClick = {
+                    navigateTrips(userInfo)
+                },
                 enabled = if (disabledIndex == 3) false else true
             ) {
                 Icon (
@@ -87,7 +100,9 @@ fun BottomMenuElement (
                 )
             }
             IconButton (
-                onClick = {},
+                onClick = {
+                    navigateExpenses(userInfo)
+                },
                 enabled = if (disabledIndex == 4) false else true
             ) {
                 Icon (
@@ -105,20 +120,20 @@ fun BottomMenuElement (
 @Preview
 @Composable
 fun BottomMenuElementPreview1 () {
-    BottomMenuElement(1)
+    BottomMenuElement(1, user1, {}, {} ,{}, {})
 }
 @Preview
 @Composable
 fun BottomMenuElementPreview2 () {
-    BottomMenuElement(2)
+    BottomMenuElement(2, user1, {}, {} ,{}, {})
 }
 @Preview
 @Composable
 fun BottomMenuElementPreview3 () {
-    BottomMenuElement(3)
+    BottomMenuElement(3, user1, {}, {} ,{}, {})
 }
 @Preview
 @Composable
 fun BottomMenuElementPreview4 () {
-    BottomMenuElement(4)
+    BottomMenuElement(4, user1, {}, {} ,{}, {})
 }

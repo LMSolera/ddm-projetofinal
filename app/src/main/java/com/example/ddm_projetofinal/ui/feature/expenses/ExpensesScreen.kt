@@ -77,6 +77,10 @@ import java.util.Locale
 @Composable
 fun ExpensesScreen (
     userInfo: User,
+    navigateHome: (User) -> Unit,
+    navigateUser: (User) -> Unit,
+    navigateTrips: (User) -> Unit,
+    navigateExpenses: (User) -> Unit,
     viewModel: ExpensesViewModel = viewModel()
 ) {
     // 'overall' = Visão Geral ; 'creation' = Nova Despesa ; 'listing' = Despesas
@@ -90,7 +94,14 @@ fun ExpensesScreen (
             .fillMaxHeight()
             .safeDrawingPadding(),
         bottomBar = {
-            BottomMenuElement(4)
+            BottomMenuElement(
+                disabledIndex = 4,
+                userInfo = userInfo,
+                navigateHome = { navigateHome(userInfo) },
+                navigateUser = { navigateUser(userInfo) },
+                navigateTrips = { navigateTrips(userInfo) },
+                navigateExpenses = {}
+            )
         }
     ) {
         Column (
@@ -615,7 +626,7 @@ fun ListingPreviewEmpty () {
 @Preview
 @Composable
 fun ExpensesScreenPreview () {
-    ExpensesScreen(user1)
+    ExpensesScreen(user1, {}, {}, {}, {})
 }
 
 fun convertMillisToDate(millis: Long): String {

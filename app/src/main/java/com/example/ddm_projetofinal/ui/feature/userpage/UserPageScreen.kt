@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.user1
 import com.example.ddm_projetofinal.ui.components.BottomMenuElement
@@ -45,7 +46,12 @@ import com.example.ddm_projetofinal.ui.components.PasswordChangeDialog
 @Composable
 fun UserPageScreen (
     userInfo: User,
-    onLogOut: () -> Unit
+    onLogOut: () -> Unit,
+    navigateHome: (User) -> Unit,
+    navigateUser: (User) -> Unit,
+    navigateTrips: (User) -> Unit,
+    navigateExpenses: (User) -> Unit,
+    viewModel: UserPageViewModel = viewModel()
 ) {
     var emailDialog by remember { mutableStateOf(false) }
     var nameDialog by remember { mutableStateOf(false) }
@@ -57,7 +63,14 @@ fun UserPageScreen (
             .fillMaxHeight()
             .safeDrawingPadding(),
         bottomBar = {
-            BottomMenuElement(2)
+            BottomMenuElement(
+                disabledIndex = 2,
+                userInfo = userInfo,
+                navigateHome = { navigateHome(userInfo) },
+                navigateUser = {},
+                navigateTrips = { navigateTrips(userInfo) },
+                navigateExpenses = { navigateExpenses(userInfo) }
+            )
         }
     ) {
         Column (
@@ -195,5 +208,5 @@ fun UserPageScreen (
 @Preview
 @Composable
 fun UserPageScrenPreview () {
-    UserPageScreen(user1, {})
+    UserPageScreen(user1, {}, {}, {}, {}, {})
 }

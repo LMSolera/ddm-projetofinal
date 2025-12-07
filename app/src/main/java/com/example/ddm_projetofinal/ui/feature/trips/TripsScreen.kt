@@ -50,6 +50,10 @@ import com.example.ddm_projetofinal.ui.components.TripDialog
 @Composable
 fun TripsScreen (
     userInfo: User,
+    navigateHome: (User) -> Unit,
+    navigateUser: (User) -> Unit,
+    navigateTrips: (User) -> Unit,
+    navigateExpenses: (User) -> Unit,
     viewModel: TripsViewModel = viewModel()
 ) {
     var showTripDialog by remember { mutableStateOf(false) }
@@ -61,7 +65,14 @@ fun TripsScreen (
             .fillMaxHeight()
             .fillMaxWidth(),
         bottomBar = {
-            BottomMenuElement(3)
+            BottomMenuElement(
+                disabledIndex = 3,
+                userInfo = userInfo,
+                navigateHome = { navigateHome(userInfo) },
+                navigateUser = { navigateUser(userInfo) },
+                navigateTrips = {},
+                navigateExpenses = { navigateExpenses(userInfo) }
+            )
         },
         floatingActionButton = {
             IconButton (
@@ -140,7 +151,7 @@ fun TripsScreen (
                         TripCard (tripInfo = trip, {
                             showTripDialog = !showTripDialog
                             tripDialogCache = trip
-                        })
+                        }, true)
                         Spacer( modifier = Modifier.height(4.dp))
                     }
                 }
@@ -156,5 +167,5 @@ fun TripsScreen (
 @Preview
 @Composable
 fun TripsScreenPreview () {
-    TripsScreen(user1)
+    TripsScreen(user1, {}, {}, {}, {})
 }

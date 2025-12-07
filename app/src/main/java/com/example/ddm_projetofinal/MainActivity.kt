@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ddm_projetofinal.model.user1
+import com.example.ddm_projetofinal.navigation.MainNavGraph
+import com.example.ddm_projetofinal.navigation.NoLoginNavGraph
 import com.example.ddm_projetofinal.ui.feature.expenses.ExpensesScreen
 import com.example.ddm_projetofinal.ui.feature.trips.TripsScreen
 import com.example.ddm_projetofinal.ui.feature.trips.TripsScreenPreview
@@ -23,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DDMprojetofinalTheme {
-                ExpensesScreen(user1)
+                NoLoginNavGraph()
             }
         }
     }

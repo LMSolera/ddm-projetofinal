@@ -35,12 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.User
+import com.example.ddm_projetofinal.model.user1
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen (
     onSuccessfulLogin: (User) -> Unit,
+    navigateToRegister: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
@@ -134,7 +136,9 @@ fun LoginScreen (
             Spacer( modifier = Modifier.height(12.dp))
 
             Button (
-                onClick = {},
+                onClick = {
+                    onSuccessfulLogin(user1)
+                },
                 shape = MaterialTheme.shapes.extraSmall,
                 modifier = Modifier
                     .width(300.dp),
@@ -158,7 +162,9 @@ fun LoginScreen (
             Spacer( modifier = Modifier.height(12.dp))
 
             Button (
-                onClick = {},
+                onClick = {
+                    navigateToRegister()
+                },
                 shape = MaterialTheme.shapes.extraSmall,
                 colors = ButtonColors(
                     Color(0xFF000000),
@@ -180,6 +186,6 @@ fun LoginScreen (
 @Composable
 fun LoginScreenPreview () {
     LoginScreen (
-        {},
+        {}, {}
     )
 }

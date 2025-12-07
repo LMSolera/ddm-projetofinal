@@ -36,11 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ddm_projetofinal.model.User
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RegisterScreen (
-    onSuccessfulRegister: (String) -> Unit,
+    onSuccessfulRegister: (User) -> Unit,
+    navigateToLogin: () -> Unit,
     viewModel: RegisterViewModel = viewModel()
 ) {
     var name by remember { mutableStateOf("") }
@@ -175,7 +177,9 @@ fun RegisterScreen (
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    navigateToLogin()
+                },
                 shape = MaterialTheme.shapes.extraSmall,
                 colors = ButtonColors(
                     Color(0xFF000000),
@@ -196,6 +200,6 @@ fun RegisterScreen (
 @Composable
 fun RegisterScreenPreview () {
     RegisterScreen (
-        {},
+        {}, {}
     )
 }
