@@ -18,8 +18,12 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,12 +46,14 @@ import com.example.ddm_projetofinal.ui.components.TripCard
 @Composable
 fun HomeScreen (
     userInfo: User,
-    navigateHome: (User) -> Unit,
     navigateUser: (User) -> Unit,
     navigateTrips: (User) -> Unit,
     navigateExpenses: (User) -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    viewModel.getRecentTrips(userInfo.id)
+
     Scaffold (
         modifier = Modifier
             .fillMaxWidth()
@@ -118,16 +124,14 @@ fun HomeScreen (
             Spacer( modifier = Modifier.height(16.dp))
 
             Text (
-                text = "Viagem mais recente",
+                text = "Viagem criada mais recente",
                 fontSize = 20.sp,
                 fontWeight = FontWeight(1000)
             )
 
             Spacer( modifier = Modifier.height(16.dp))
 
-            var viagemMaisRecente: Trip? = null
-            viagemMaisRecente = trip1
-            if (viagemMaisRecente == null) {
+            if (uiState.recentTrips.isEmpty()) {
                 Card (
                     border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
                     colors = CardColors(
@@ -149,7 +153,10 @@ fun HomeScreen (
                     )
                 }
             } else {
-                TripCard(tripInfo = viagemMaisRecente, {}, false)
+                TripCard(tripInfo = uiState.recentTrips.get(uiState.recentTrips.lastIndex),
+                    {},
+                    {},
+                    false)
             }
 
 
@@ -163,11 +170,7 @@ fun HomeScreen (
 
             Spacer( modifier = Modifier.height(16.dp))
 
-            var temporaryExpenses: MutableList<Expense>? = null
-            temporaryExpenses = mutableListOf(expense1, expense2, expense3)
-            // TODO: Quando estivermos extraindo expenses do banco, adicionar uma lógica pra usar
-            // TODO: somente as três mais recentes
-            if (temporaryExpenses == null || temporaryExpenses.isEmpty()) {
+            if (uiState.recentExpenses.isEmpty()) {
                 Card (
                     border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
                     colors = CardColors(
@@ -191,7 +194,7 @@ fun HomeScreen (
             } else {
                 LazyColumn {
                     items(
-                        items = temporaryExpenses,
+                        items = uiState.recentExpenses,
                         key = { it.id ?: "" }
                     ) { expense ->
                         ExpenseCardSmall(
@@ -210,5 +213,5 @@ fun HomeScreen (
 @Preview
 @Composable
 fun HomeScreenPreview () {
-    HomeScreen (user1, {}, {}, {}, {})
+    HomeScreen (user1, {}, {}, {})
 }
