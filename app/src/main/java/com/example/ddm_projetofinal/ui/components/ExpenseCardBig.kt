@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.expense1
@@ -47,8 +48,9 @@ import com.example.ddm_projetofinal.model.expense4
 @Composable
 fun ExpenseCardBig (
     expenseInfo: Expense,
+    tripTitle: String,
     onReturn: () -> Unit,
-    onDelete: (User) -> Unit
+    onDelete: () -> Unit
 ) {
     Card (
         border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
@@ -120,6 +122,14 @@ fun ExpenseCardBig (
             Spacer (modifier = Modifier.height(16.dp))
 
             Text (
+                text = "Da viagem: " + tripTitle,
+                fontSize = 12.sp,
+                fontWeight = FontWeight(700)
+            )
+
+            Spacer (modifier = Modifier.height(4.dp))
+
+            Text (
                 text = expenseInfo.observation + "."
             )
 
@@ -145,7 +155,7 @@ fun ExpenseCardBig (
                 }
                 IconButton (
                     onClick = {
-                        onDelete
+                        onDelete()
                     }
                 ) {
                     Icon (
@@ -163,20 +173,20 @@ fun ExpenseCardBig (
 @Preview
 @Composable
 fun ExpenseCardBigPreview1 () {
-    ExpenseCardBig(expense1, {}, {})
+    ExpenseCardBig(expense1, "Teste", {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview2 () {
-    ExpenseCardBig(expense2, {}, {})
+    ExpenseCardBig(expense2, "Teste", {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview3 () {
-    ExpenseCardBig(expense3, {}, {})
+    ExpenseCardBig(expense3, "Teste", {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview4 () {
-    ExpenseCardBig(expense4, {}, {})
+    ExpenseCardBig(expense4, "Teste", {}, {})
 }

@@ -44,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,24 +58,28 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.Expense
+import com.example.ddm_projetofinal.model.Trip
 import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.expense1
 import com.example.ddm_projetofinal.model.expense2
 import com.example.ddm_projetofinal.model.expense3
 import com.example.ddm_projetofinal.model.expense4
 import com.example.ddm_projetofinal.model.user1
+import com.example.ddm_projetofinal.navigation.TripsRoute
 import com.example.ddm_projetofinal.ui.components.BottomMenuElement
 import com.example.ddm_projetofinal.ui.components.ExpenseCardBig
 import com.example.ddm_projetofinal.ui.components.ExpenseCardSmall
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.exp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -85,10 +90,10 @@ fun ExpensesScreen (
     navigateTrips: (User) -> Unit,
     viewModel: ExpensesViewModel = viewModel()
 ) {
-    // 'overall' = Visão Geral ; 'creation' = Nova Despesa ; 'listing' = Despesas
-    // TODO: Transferir isso para uma variável de estado no viewModel
-    var selectedContent by remember { mutableStateOf("") }
-    selectedContent = "overall"
+    val uiState by viewModel.uiState.collectAsState()
+
+    viewModel.getExpenses(userInfo.id)
+    viewModel.getRecentTrips(userInfo.id)
 
     Scaffold (
         modifier = Modifier
@@ -109,7 +114,7 @@ fun ExpensesScreen (
         Column (
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .height(730.dp)
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -134,8 +139,8 @@ fun ExpensesScreen (
                     Color(0xFFFFFFFF))
                 Button (
                     colors = buttonColors,
-                    enabled = if (selectedContent == "listing") {false} else {true},
-                    onClick = {selectedContent = "listing"}
+                    enabled = if (uiState.selectedContent == "listing") {false} else {true},
+                    onClick = {viewModel.updateSelectedContent("listing")}
                 ) {
                     Text (
                         text = "Despesas",
@@ -144,8 +149,8 @@ fun ExpensesScreen (
                 }
                 Button (
                     colors = buttonColors,
-                    enabled = if (selectedContent == "creation") {false} else {true},
-                    onClick = {selectedContent = "creation"}
+                    enabled = if (uiState.selectedContent  == "creation") {false} else {true},
+                    onClick = {viewModel.updateSelectedContent("creation")}
                 ) {
                     Text (
                         text = "Nova Despesa",
@@ -154,8 +159,8 @@ fun ExpensesScreen (
                 }
                 Button (
                     colors = buttonColors,
-                    enabled = if (selectedContent == "overall") {false} else {true},
-                    onClick = {selectedContent = "overall"}
+                    enabled = if (uiState.selectedContent  == "overall") {false} else {true},
+                    onClick = {viewModel.updateSelectedContent("overall")}
                 ) {
                     Text (
                         text = "Visão Geral",
@@ -166,10 +171,60 @@ fun ExpensesScreen (
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            when (selectedContent) {
-                "overall" -> Overall(emptyList()) // TODO: Vai ser um atributo de estado da viewModel
-                "creation" -> Creation({userInfo ->})
-                "listing" -> Listing(mutableListOf(expense1, expense2, expense3, expense4), {}) // TODO: Vai ser um atributo de estado da viewModel
+            when (uiState.selectedContent) {
+                "overall" -> Overall(uiState.recentExpenses)
+                "creation" -> Creation({ expense ->
+                        if (expense.id.isEmpty()) {
+                            viewModel.insertNewExpense(
+                                    userId = userInfo.id,
+                                    tripId = expense.tripId,
+                                    observation = expense.observation,
+                                    value = expense.value,
+                                    date = expense.date,
+                                    type = expense.type
+                                )
+                        }
+                     },
+                    uiState.recentTrips)
+                "listing" -> Listing(
+                    uiState.recentExpenses,
+                    uiState.recentTrips,
+                    { toBeDeleted ->
+                        viewModel.deleteExpense(toBeDeleted) },
+                )
+            }
+
+            uiState.error?.let{
+                Spacer(modifier = Modifier.height(12.dp))
+                if (it) {
+                    Card (
+                        colors = CardColors(
+                            MaterialTheme.colorScheme.errorContainer,
+                            MaterialTheme.colorScheme.error,
+                            Color(0xFFFFFFFF),
+                            Color(0xFFFFFFFF))
+                    ) {
+                        Text (
+                            modifier = Modifier
+                                .padding(8.dp),
+                            text = uiState.message
+                        )
+                    }
+                } else {
+                    Card (
+                        colors = CardColors(
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            MaterialTheme.colorScheme.onSecondaryContainer,
+                            Color(0xFFFFFFFF),
+                            Color(0xFFFFFFFF))
+                    ) {
+                        Text (
+                            modifier = Modifier
+                                .padding(8.dp),
+                            text = uiState.message
+                        )
+                    }
+                }
             }
         }
     }
@@ -181,6 +236,11 @@ fun ExpensesScreen (
 fun Overall (
     expenses: List<Expense>
 ) {
+    var valorTotal = 0.00
+    var valorTotalTransportes = 0.00
+    var valorTotalAlimentos = 0.00
+    var valorTotalEstadia = 0.00
+    var valorTotalOutros = 0.00
     Card (
         modifier = Modifier
             .fillMaxWidth(),
@@ -202,9 +262,18 @@ fun Overall (
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            //TODO: Método do viewModel que vai calcular o total das despesas de um usuário
 
-            var valorTotal = 0 // PLACEHOLDER
+
+            expenses.forEach({ expense ->
+                valorTotal += expense.value
+                when (expense.type) {
+                    "Transporte" -> valorTotalTransportes += expense.value
+                    "Comida" -> valorTotalAlimentos += expense.value
+                    "Estadia" -> valorTotalEstadia += expense.value
+                    "Outros" -> valorTotalOutros += expense.value
+                }
+            })
+
             Text (
                 text = if (expenses.isEmpty())
                 {"Sem despesas registradas"}
@@ -258,7 +327,7 @@ fun Overall (
                         fontWeight = FontWeight(750)
                     )
                     Text (
-                        text = "R$ 0.00", // TODO: Método no viewModel que retorna total em transportes
+                        text = "R$ " + String.format("%.2f", valorTotalTransportes),
                         color = Color(0xFF818181)
                     )
                 }
@@ -284,7 +353,7 @@ fun Overall (
                         fontWeight = FontWeight(750)
                     )
                     Text (
-                        text = "R$ 0.00", // TODO: Método no viewModel que retorna total em estadia
+                        text = "R$ " + String.format("%.2f", valorTotalEstadia),
                         color = Color(0xFF818181)
                     )
                 }
@@ -310,7 +379,7 @@ fun Overall (
                         fontWeight = FontWeight(750)
                     )
                     Text (
-                        text = "R$ 0.00", // TODO: Método no viewModel que retorna total em alimentos
+                        text = "R$ " + String.format("%.2f", valorTotalAlimentos),
                         color = Color(0xFF818181)
                     )
                 }
@@ -336,7 +405,7 @@ fun Overall (
                         fontWeight = FontWeight(750)
                     )
                     Text (
-                        text = "R$ 0.00", // TODO: Método no viewModel que retorna total em 'outros'
+                        text = "R$ " + String.format("%.2f", valorTotalOutros),
                         color = Color(0xFF818181)
                     )
                 }
@@ -348,16 +417,20 @@ fun Overall (
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Creation (
-    onConfirm: (User) -> Unit
+    onConfirm: (Expense) -> Unit,
+    trips: List<Trip>
 ) {
     val focusManager = LocalFocusManager.current
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     var showTypeMenu by remember { mutableStateOf(false) }
+    var showTripMenu by remember { mutableStateOf(false) }
 
     var observation by remember { mutableStateOf("")}
     var value by remember { mutableStateOf("")}
     var type by remember { mutableStateOf("")}
+    var trip by remember { mutableStateOf("")}
+    var tripId by remember { mutableStateOf("")}
     var selectedDate = datePickerState.selectedDateMillis?.let {
         convertMillisToDate(it)
     } ?: ""
@@ -455,9 +528,11 @@ fun Creation (
                 }
             }
         )
+
         if (showTypeMenu) {
             DropdownMenu(
                 expanded = showTypeMenu,
+                offset = DpOffset(-30.dp,-150.dp),
                 onDismissRequest = { showTypeMenu = false }
             ) {
                 DropdownMenuItem(
@@ -470,7 +545,7 @@ fun Creation (
                 DropdownMenuItem(
                     text = { Text("Transporte") },
                     onClick = {
-                        type = "Trasnporte"
+                        type = "Transporte"
                         showTypeMenu = false
                     }
                 )
@@ -488,6 +563,53 @@ fun Creation (
                         showTypeMenu = false
                     }
                 )
+            }
+        }
+
+        OutlinedTextField (
+            label = {
+                Text (
+                    text = "Viagem"
+                )
+            },
+            value = trip,
+            onValueChange = { trip = it},
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth(),
+            singleLine = true,
+            trailingIcon = {
+                IconButton (
+                    onClick = {  showTripMenu = !showTripMenu}
+                ) {
+                    Icon (
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Um ícone de uma seta para baixo"
+                    )
+                }
+            }
+        )
+
+        if (showTripMenu) {
+            DropdownMenu(
+                expanded = showTripMenu,
+                offset = DpOffset(-30.dp,-90.dp),
+                onDismissRequest = { showTripMenu = false }
+            ) {
+                if (trips.isEmpty()) {
+                    trip = "Sem viagens registradas"
+                } else {
+                    trips.forEach { tripObject ->
+                        DropdownMenuItem(
+                            text = { Text(tripObject.title) },
+                            onClick = {
+                                trip = tripObject.title
+                                tripId = tripObject.id
+                                showTripMenu = false
+                            }
+                        )
+                    }
+                }
             }
         }
         Column (
@@ -510,6 +632,7 @@ fun Creation (
                     onClick = {
                         observation = ""
                         type = ""
+                        trip = ""
                         value = ""
                         datePickerState.selectedDateMillis = null
                         focusManager.clearFocus()
@@ -525,13 +648,31 @@ fun Creation (
 
                 Button (
                     onClick = {
-                        onConfirm
+                        onConfirm(
+                            Expense (
+                                id = "",
+                                ownerId = "",
+                                tripId = tripId,
+                                observation = observation,
+                                value = value.toDouble(),
+                                date = selectedDate.toString(),
+                                type = type
+                            )
+                        )
+
+                        observation = ""
+                        type = ""
+                        trip = ""
+                        value = ""
+                        datePickerState.selectedDateMillis = null
+                        focusManager.clearFocus()
                     },
                     colors = buttonColors,
                     enabled = if (!observation.isEmpty()
                         && !selectedDate.isEmpty()
                         && !value.isEmpty()
-                        && !type.isEmpty()) {true} else {false}
+                        && !type.isEmpty()
+                        && !trip.isEmpty()) {true} else {false}
                 ) {
                     Text (
                         text = "Concluir"
@@ -545,7 +686,8 @@ fun Creation (
 @Composable
 fun Listing (
     expenses: List<Expense>,
-    onDelete: (User) -> Unit
+    trips: List<Trip>,
+    onDelete: (Expense) -> Unit,
 ) {
     var detailsPopup by remember { mutableStateOf(false) }
     var detailsContent by remember { mutableStateOf<Expense?> (null) }
@@ -596,7 +738,17 @@ fun Listing (
             alignment = Alignment.Center
         ) {
             detailsContent?.let {
-                ExpenseCardBig(detailsContent!!, { detailsPopup = false }, {})
+                var title: String = ""
+                trips.forEach(){ trip ->
+                    if (trip.id == it.tripId) {
+                        title = trip.title
+                    }
+                }
+                ExpenseCardBig(it,
+                    title,
+                    { detailsPopup = false },
+                    { detailsPopup = false
+                    onDelete(it)})
             }
         }
     }
@@ -605,7 +757,7 @@ fun Listing (
 @Preview
 @Composable
 fun CreationPreview () {
-    Creation({})
+    Creation({}, emptyList())
 }
 
 @Preview
@@ -617,13 +769,13 @@ fun OverallPreview () {
 @Preview
 @Composable
 fun ListingPreviewWithExpenses () {
-    Listing(mutableListOf(expense1, expense2, expense3, expense4), {})
+    Listing(mutableListOf(expense1, expense2, expense3, expense4), emptyList(), {})
 }
 
 @Preview
 @Composable
 fun ListingPreviewEmpty () {
-    Listing(emptyList(), {})
+    Listing(emptyList(), emptyList(), {})
 }
 
 @Preview
