@@ -24,12 +24,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,12 +54,14 @@ fun TripsScreen (
     userInfo: User,
     navigateHome: (User) -> Unit,
     navigateUser: (User) -> Unit,
-    navigateTrips: (User) -> Unit,
     navigateExpenses: (User) -> Unit,
     viewModel: TripsViewModel = viewModel()
 ) {
     var showTripDialog by remember { mutableStateOf(false) }
     var tripDialogCache by remember { mutableStateOf<Trip?>(null) }
+
+    val uiState by viewModel.uiState.collectAsState()
+    viewModel.getRecentTrips(userInfo.id)
 
     Scaffold (
         modifier = Modifier
@@ -78,7 +82,7 @@ fun TripsScreen (
             IconButton (
                 modifier = Modifier
                     .background(Color(0xFFE8DCFD), MaterialTheme.shapes.medium)
-                    .size(64.dp),
+                    .size(52.dp),
                 onClick = {
                     showTripDialog = !showTripDialog
                     tripDialogCache = null
@@ -96,7 +100,7 @@ fun TripsScreen (
         Column (
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .height(730.dp)
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -111,7 +115,7 @@ fun TripsScreen (
             Spacer( modifier = Modifier.height(16.dp))
 
             Text (
-                text = "Suas Viagens:",
+                text = "Suas Viagens: " + uiState.recentTrips.size.toString(),
                 fontSize = 20.sp,
                 fontWeight = FontWeight(1000)
             )
@@ -121,7 +125,7 @@ fun TripsScreen (
             var temporaryTrips: MutableList<Trip>? = null
             temporaryTrips = mutableListOf(trip1, trip2, trip3)
 
-            if (temporaryTrips == null || temporaryTrips.isEmpty()) {
+            if (uiState.recentTrips.isEmpty() || uiState.isLoading) {
                 Card (
                     border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
                     colors = CardColors(
@@ -145,12 +149,14 @@ fun TripsScreen (
             } else {
                 LazyColumn {
                     items(
-                        items = temporaryTrips,
+                        items = uiState.recentTrips,
                         key = { it.id ?: "" }
                     ) { trip ->
                         TripCard (tripInfo = trip, {
                             showTripDialog = !showTripDialog
                             tripDialogCache = trip
+                        }, {
+                            viewModel.deleteTrip(trip)
                         }, true)
                         Spacer( modifier = Modifier.height(4.dp))
                     }
@@ -158,7 +164,17 @@ fun TripsScreen (
             }
 
             if (showTripDialog) {
-                TripDialog(tripDialogCache, {}, {showTripDialog = false})
+                TripDialog(tripDialogCache,
+                    { trip ->
+                        if (trip.id.isNotEmpty() && trip.ownerId.isNotEmpty()) {
+                            viewModel.updateTrip(trip)
+                            showTripDialog = false
+                        } else {
+                            viewModel.insertNewTrip(userInfo.id, trip.title, trip.date)
+                            showTripDialog = false
+                        }
+                    },
+                    {showTripDialog = false})
             }
         }
     }
@@ -167,5 +183,5 @@ fun TripsScreen (
 @Preview
 @Composable
 fun TripsScreenPreview () {
-    TripsScreen(user1, {}, {}, {}, {})
+    TripsScreen(user1, {}, {}, {})
 }
