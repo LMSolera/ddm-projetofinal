@@ -1,21 +1,25 @@
 package com.example.ddm_projetofinal.data.repository
 
+import com.example.ddm_projetofinal.model.Trip
+import com.example.ddm_projetofinal.model.User
+
 interface AppRepository {
     // User methods
-    suspend fun login()
-    suspend fun insertUser()
-    suspend fun updateUser()
+    suspend fun login(email: String, password: String): Result<User>
+    suspend fun insertUser(user: User): Result<User>
+    suspend fun checkUserByEmail(email: String): Result<User>
+//    suspend fun updateUser()
 
     // Trip Methods
-    suspend fun insertTrip()
-    suspend fun deleteTrip()
-    suspend fun updateTrip()
-    suspend fun getTripsByUser()
+    suspend fun insertTrip(trip: Trip): Result<Trip>
+    suspend fun deleteTrip(id: String): Result<Unit>
+    suspend fun updateTrip(trip: Trip): Result<Trip>
+    suspend fun getTripsByUser(ownerId: String): Result<List<Trip>>
 
     // Expense methods
-    suspend fun insertExpense()
-    suspend fun deleteExpense()
-    suspend fun updateExpense()
-    suspend fun getExpensesByUser()
-    suspend fun getExpensesByTrip()
+//    suspend fun insertExpense()
+//    suspend fun deleteExpense()
+//    suspend fun updateExpense()
+//    suspend fun getExpensesByUser()
+//    suspend fun getExpensesByTrip()
 }

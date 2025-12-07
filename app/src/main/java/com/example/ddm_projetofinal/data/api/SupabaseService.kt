@@ -1,21 +1,38 @@
 package com.example.ddm_projetofinal.data.api
 
+import com.example.ddm_projetofinal.data.entity.TripEntity
+import com.example.ddm_projetofinal.data.entity.UserEntity
+import com.example.ddm_projetofinal.model.Trip
+import com.example.ddm_projetofinal.model.User
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface SupabaseService {
 
     @GET("rest/v1/tb_user")
     suspend fun login (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("email") email: String,
+        @Query("password") password: String,
+        @Query("select") select: String = "*"
+    ): Response<List<UserEntity>>
 
     @POST("rest/v1/tb_user")
+    @Headers("Prefer: return=representation")
     suspend fun newUser (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Body userEntity: UserEntity
+    ): Response<List<UserEntity>>
+
+    @GET("rest/v1/tb_user")
+    suspend fun getUserByEmail (
+        @Query("email") email: String,
+        @Query("select") select: String = "*"
+    ): Response<List<UserEntity>>
 
     @PATCH("rest/v1/tb_user")
     suspend fun updateUser (
@@ -24,23 +41,27 @@ interface SupabaseService {
 
     @GET("rest/v1/tb_trip")
     suspend fun getTrips (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("owner_id") owner_id: String,
+        @Query("select") select: String = "*"
+    ): Response<List<TripEntity>>
 
     @POST("rest/v1/tb_trip")
+    @Headers("Prefer: return=representation")
     suspend fun insertTrip (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Body tripEntity: TripEntity
+    ): Response<List<TripEntity>>
 
     @PATCH("rest/v1/tb_trip")
+    @Headers("Prefer: return=representation")
     suspend fun updateTrip (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("id") id: String,
+        @Body trip: Map<String, String>
+    ): Response<List<TripEntity>>
 
-    @DELETE("rest/v1/tb_trips")
+    @DELETE("rest/v1/tb_trip")
     suspend fun deleteTrip (
-        //TODO :: FULL IMPLEMENTATION
-    )
+        @Query("id") id: String
+    ): Response<Unit>
 
     @GET("rest/v1/tb_expense")
     suspend fun getExpenses (
