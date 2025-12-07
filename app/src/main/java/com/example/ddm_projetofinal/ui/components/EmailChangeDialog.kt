@@ -30,7 +30,7 @@ import com.example.ddm_projetofinal.model.user1
 fun EmailChangeDialog (
     userInfo: User,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (User) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -91,9 +91,17 @@ fun EmailChangeDialog (
         },
         confirmButton = {
             Button(
-                onClick = {onConfirm},
+                onClick = {
+                    onConfirm(
+                        User(
+                            id =  userInfo.id,
+                            name = userInfo.name,
+                            email = email,
+                            password = userInfo.password))
+                },
                 enabled = if (!email.isEmpty()
-                    && !password.isEmpty())
+                    && !password.isEmpty()
+                    && password.equals(userInfo.password))
                 {true} else {false}
             ) {
                 Text("Confirmar")

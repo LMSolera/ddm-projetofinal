@@ -30,7 +30,7 @@ import com.example.ddm_projetofinal.model.user1
 fun NameChangeDialog (
     userInfo: User,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (User) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -91,9 +91,18 @@ fun NameChangeDialog (
         },
         confirmButton = {
             Button(
-                onClick = {onConfirm},
+                onClick = {
+                    onConfirm (
+                        User(
+                            id =  userInfo.id,
+                            name = name,
+                            email = userInfo.email,
+                            password = userInfo.password)
+                    )
+                          },
                 enabled = if (!name.isEmpty()
-                    && !password.isEmpty())
+                    && !password.isEmpty()
+                    && password.equals(userInfo.password))
                 {true} else {false}
             ) {
                 Text("Confirmar")

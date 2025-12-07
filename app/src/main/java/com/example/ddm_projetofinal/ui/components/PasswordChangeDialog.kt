@@ -24,7 +24,7 @@ import com.example.ddm_projetofinal.model.user1
 fun PasswordChangeDialog (
     userInfo: User,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (User) -> Unit
 ) {
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -142,8 +142,17 @@ fun PasswordChangeDialog (
         },
         confirmButton = {
             Button(
-                onClick = {onConfirm},
+                onClick = {
+                    onConfirm (
+                        User(
+                            id =  userInfo.id,
+                            name = userInfo.name,
+                            email = userInfo.email,
+                            password = newPassword)
+                    )
+                },
                 enabled = if (!oldPassword.isEmpty()
+                    && oldPassword.equals(userInfo.password)
                     && !newPassword.isEmpty()
                     && !newPasswordConfirm.isEmpty())
                 {true} else {false}
