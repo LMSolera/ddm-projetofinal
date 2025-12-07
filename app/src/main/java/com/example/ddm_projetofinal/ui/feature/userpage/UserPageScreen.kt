@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +49,7 @@ import com.example.ddm_projetofinal.ui.components.PasswordChangeDialog
 fun UserPageScreen (
     userInfo: User,
     onLogOut: () -> Unit,
+    onCredentialsUpdate: (User) -> Unit,
     navigateHome: (User) -> Unit,
     navigateTrips: (User) -> Unit,
     navigateExpenses: (User) -> Unit,
@@ -55,6 +58,15 @@ fun UserPageScreen (
     var emailDialog by remember { mutableStateOf(false) }
     var nameDialog by remember { mutableStateOf(false) }
     var passwordDialog by remember { mutableStateOf(false) }
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.updatedCredentials) {
+        if (uiState.updatedCredentials && uiState.newUserCredentials != null) {
+            kotlinx.coroutines.delay(2000)
+            onCredentialsUpdate(uiState.newUserCredentials!!)
+        }
+    }
 
     Scaffold (
         modifier = Modifier
@@ -173,7 +185,7 @@ fun UserPageScreen (
                         fontWeight = FontWeight(750),
                         modifier = Modifier
                             .clickable {
-
+                                onLogOut()
                             }
                     )
 
@@ -181,21 +193,76 @@ fun UserPageScreen (
                         EmailChangeDialog (
                             userInfo = userInfo,
                             onDismiss = { emailDialog = false },
-                            onConfirm = {}
+                            onConfirm = { newUserInfo ->
+                                emailDialog = false
+                                viewModel.updateUser(User(
+                                    id = newUserInfo.id,
+                                    name = newUserInfo.name,
+                                    email = newUserInfo.email,
+                                    password = newUserInfo.password))
+                            }
                         )
                     }
                     if (nameDialog) {
                         NameChangeDialog (
                             userInfo = userInfo,
                             onDismiss = { nameDialog = false },
-                            onConfirm = {}
+                            onConfirm = { newUserInfo ->
+                                nameDialog = false
+                                viewModel.updateUser(User(
+                                    id = newUserInfo.id,
+                                    name = newUserInfo.name,
+                                    email = newUserInfo.email,
+                                    password = newUserInfo.password))
+                            }
                         )
                     }
                     if (passwordDialog) {
                         PasswordChangeDialog (
                             userInfo = userInfo,
                             onDismiss = { passwordDialog = false },
-                            onConfirm = {}
+                            onConfirm = { newUserInfo ->
+                                passwordDialog = false
+                                viewModel.updateUser(User(
+                                    id = newUserInfo.id,
+                                    name = newUserInfo.name,
+                                    email = newUserInfo.email,
+                                    password = newUserInfo.password))
+                            }
+                        )
+                    }
+                }
+            }
+
+            uiState.error?.let {
+                if (it) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Card (
+                        colors = CardColors(
+                            MaterialTheme.colorScheme.errorContainer,
+                            MaterialTheme.colorScheme.error,
+                            Color(0xFFFFFFFF),
+                            Color(0xFFFFFFFF))
+                    ) {
+                        Text (
+                            modifier = Modifier
+                                .padding(8.dp),
+                            text = uiState.message
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Card (
+                        colors = CardColors(
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            MaterialTheme.colorScheme.onSecondaryContainer,
+                            Color(0xFFFFFFFF),
+                            Color(0xFFFFFFFF))
+                    ) {
+                        Text (
+                            modifier = Modifier
+                                .padding(8.dp),
+                            text = uiState.message
                         )
                     }
                 }
@@ -207,5 +274,5 @@ fun UserPageScreen (
 @Preview
 @Composable
 fun UserPageScrenPreview () {
-    UserPageScreen(user1, {}, {}, {}, {})
+    UserPageScreen(user1, {}, {}, {}, {}, {})
 }
