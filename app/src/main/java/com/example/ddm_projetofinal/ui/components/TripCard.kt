@@ -1,5 +1,6 @@
 package com.example.ddm_projetofinal.ui.components
 
+import android.text.Editable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,7 +40,8 @@ import com.example.ddm_projetofinal.model.trip3
 @Composable
 fun TripCard (
     tripInfo: Trip,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    editable: Boolean,
 ) {
     Card (
         border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
@@ -91,20 +93,22 @@ fun TripCard (
                     fontSize = 10.sp,
                 )
             }
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton (
-                    onClick = {
-                        onClick()
-                    }
+            if (editable) {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Icon (
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Ícone de um lápis"
-                    )
+                    IconButton (
+                        onClick = {
+                            onClick()
+                        }
+                    ) {
+                        Icon (
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Ícone de um lápis"
+                        )
+                    }
                 }
             }
         }
@@ -114,15 +118,15 @@ fun TripCard (
 @Preview
 @Composable
 fun TripCardPreview1 () {
-    TripCard(trip1, {})
+    TripCard(trip1, {}, true)
 }
 @Preview
 @Composable
 fun TripCardPreview2 () {
-    TripCard(trip2, {})
+    TripCard(trip2, {}, false)
 }
 @Preview
 @Composable
 fun TripCardPreview3 () {
-    TripCard(trip3, {})
+    TripCard(trip3, {}, true)
 }
