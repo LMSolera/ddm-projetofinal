@@ -77,7 +77,7 @@ fun TripCard (
             Column {
                 Text (
                     text = tripInfo.title,
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight(650)
                 )
 
