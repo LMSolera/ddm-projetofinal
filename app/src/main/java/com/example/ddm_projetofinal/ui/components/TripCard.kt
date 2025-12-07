@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -40,7 +41,8 @@ import com.example.ddm_projetofinal.model.trip3
 @Composable
 fun TripCard (
     tripInfo: Trip,
-    onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
     editable: Boolean,
 ) {
     Card (
@@ -85,13 +87,6 @@ fun TripCard (
                     text = "Data marcada: " + tripInfo.date,
                     fontSize = 10.sp,
                 )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text (
-                    text = "Despesas da viagem: R$ ", //TODO implementações do banco para extrair valor total relacionado a uma viagem
-                    fontSize = 10.sp,
-                )
             }
             if (editable) {
                 Row (
@@ -101,7 +96,17 @@ fun TripCard (
                 ) {
                     IconButton (
                         onClick = {
-                            onClick()
+                            onDelete()
+                        }
+                    ) {
+                        Icon (
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Ícone de uma lixeira"
+                        )
+                    }
+                    IconButton (
+                        onClick = {
+                            onEdit()
                         }
                     ) {
                         Icon (
@@ -118,15 +123,15 @@ fun TripCard (
 @Preview
 @Composable
 fun TripCardPreview1 () {
-    TripCard(trip1, {}, true)
+    TripCard(trip1, {}, {}, true)
 }
 @Preview
 @Composable
 fun TripCardPreview2 () {
-    TripCard(trip2, {}, false)
+    TripCard(trip2, {}, {}, false)
 }
 @Preview
 @Composable
 fun TripCardPreview3 () {
-    TripCard(trip3, {}, true)
+    TripCard(trip3, {}, {}, true)
 }
