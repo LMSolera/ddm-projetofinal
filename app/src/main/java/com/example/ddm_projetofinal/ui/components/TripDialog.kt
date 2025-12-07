@@ -1,18 +1,35 @@
 package com.example.ddm_projetofinal.ui.components
 
+import android.icu.text.DateFormat
+import android.icu.text.SimpleDateFormat
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ddm_projetofinal.model.Trip
@@ -22,25 +39,40 @@ import com.example.ddm_projetofinal.model.trip3
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import com.example.ddm_projetofinal.ui.feature.expenses.convertMillisToDate
 import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripDialog (
     tripInfo: Trip?,
     onConfirm: (Trip) -> Unit,
     onDismiss: () -> Unit
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var datePickerState = rememberDatePickerState()
 
     var title by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
+
+    var id: String = ""
+    var ownerId: String = ""
 
     if (tripInfo != null) {
+        id = tripInfo.id
+        ownerId = tripInfo.ownerId
         title = tripInfo.title
-        date = tripInfo.date
+        datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = SimpleDateFormat("dd/MM/yyyy").parse(tripInfo.date).time)
     }
 
+    var selectedDate = datePickerState.selectedDateMillis?.let {
+        convertMillisToDate(it)
+    } ?: ""
+
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {},
         title = {
             Text(
                 text = if (tripInfo == null) {"Criar nova viagem"} else {"Editar viagem"},
@@ -59,27 +91,61 @@ fun TripDialog (
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
 
-                OutlinedTextField(
-                    value = date,
-                    onValueChange = {
-                        date = dateMasking(it)
+                OutlinedTextField ( // Campo do Material 3, mt agradeço à eles :praying:
+                    value = selectedDate,
+                    onValueChange = {},
+                    label = { Text("Data da despesa") },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "Select date"
+                            )
+                        }
                     },
-                    label = {
-                        Text (
-                            if (tripInfo == null) {"Data da viagem"} else {"Nova data"}
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
                 )
+
+                if (showDatePicker) {
+                    Popup(
+                        onDismissRequest = { showDatePicker = false },
+                        alignment = Alignment.Center,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .offset(y = 64.dp)
+                                .shadow(elevation = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(16.dp)
+                        ) {
+                            DatePicker(
+                                state = datePickerState,
+                                showModeToggle = false
+                            )
+                        }
+                    }
+                }
             }
         },
         confirmButton = {
             Button(
-                onClick = {onConfirm},
+                onClick = {
+                    onConfirm (
+                        Trip (
+                            id = id,
+                            ownerId = ownerId,
+                            title = title,
+                            date = selectedDate.toString()))
+                  },
                 enabled = if (!title.isEmpty()
-                    && !date.isEmpty())
+                    && !selectedDate.isEmpty())
                 {true} else {false}
             ) {
                 Text(
