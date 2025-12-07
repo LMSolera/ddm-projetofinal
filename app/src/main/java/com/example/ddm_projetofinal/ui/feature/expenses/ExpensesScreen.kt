@@ -32,6 +32,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,12 +53,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.User
@@ -80,7 +83,6 @@ fun ExpensesScreen (
     navigateHome: (User) -> Unit,
     navigateUser: (User) -> Unit,
     navigateTrips: (User) -> Unit,
-    navigateExpenses: (User) -> Unit,
     viewModel: ExpensesViewModel = viewModel()
 ) {
     // 'overall' = Visão Geral ; 'creation' = Nova Despesa ; 'listing' = Despesas
@@ -348,6 +350,7 @@ fun Overall (
 fun Creation (
     onConfirm: (User) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     var showTypeMenu by remember { mutableStateOf(false) }
@@ -395,13 +398,13 @@ fun Creation (
         if (showDatePicker) {
             Popup(
                 onDismissRequest = { showDatePicker = false },
-                alignment = Alignment.TopStart
+                alignment = Alignment.Center,
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .offset(y = 64.dp)
-                        .shadow(elevation = 4.dp)
+                        .shadow(elevation = 8.dp)
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
@@ -508,7 +511,8 @@ fun Creation (
                         observation = ""
                         type = ""
                         value = ""
-                        selectedDate = ""
+                        datePickerState.selectedDateMillis = null
+                        focusManager.clearFocus()
                     },
                     colors = buttonColors
                 ) {
@@ -528,7 +532,6 @@ fun Creation (
                         && !selectedDate.isEmpty()
                         && !value.isEmpty()
                         && !type.isEmpty()) {true} else {false}
-
                 ) {
                     Text (
                         text = "Concluir"
@@ -626,7 +629,7 @@ fun ListingPreviewEmpty () {
 @Preview
 @Composable
 fun ExpensesScreenPreview () {
-    ExpensesScreen(user1, {}, {}, {}, {})
+    ExpensesScreen(user1, {}, {}, {})
 }
 
 fun convertMillisToDate(millis: Long): String {
