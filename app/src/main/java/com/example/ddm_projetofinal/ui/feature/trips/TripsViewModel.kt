@@ -1,14 +1,11 @@
 package com.example.ddm_projetofinal.ui.feature.trips
 
 import android.util.Log
-import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ddm_projetofinal.data.repository.AppRepositoryImpl
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.Trip
-import com.example.ddm_projetofinal.model.User
-import com.example.ddm_projetofinal.ui.feature.home.HomeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
