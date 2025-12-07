@@ -14,6 +14,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,13 +23,18 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,7 +43,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ddm_projetofinal.data.local.UserLocalDatabase
+import com.example.ddm_projetofinal.data.local.UserLocalDatabaseProvider
+import com.example.ddm_projetofinal.data.local.UserLocalRepositoryImpl
 import com.example.ddm_projetofinal.model.User
+import com.example.ddm_projetofinal.model.user2
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -45,15 +56,33 @@ fun RegisterScreen (
     navigateToLogin: () -> Unit,
     viewModel: RegisterViewModel = viewModel()
 ) {
+    val focusManager = LocalFocusManager.current
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current.applicationContext
+    val localDatabase = UserLocalDatabaseProvider.provide(context)
+    val repository = UserLocalRepositoryImpl (
+        dao = localDatabase.userLocalDao
+    )
+    viewModel.localRepository = repository
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.registerSucess) {
+        if (uiState.registerSucess && uiState.user != null) {
+            onSuccessfulRegister(uiState.user!!)
+        }
+    }
 
     Scaffold (
         modifier = Modifier
             .safeDrawingPadding()
+            .blur(
+                if (uiState.isLoading) {8.dp} else {0.dp}
+            )
     ) {
         Column(
             modifier = Modifier
@@ -153,7 +182,10 @@ fun RegisterScreen (
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    focusManager.clearFocus()
+                    viewModel.register(name, email, password)
+                },
                 shape = MaterialTheme.shapes.extraSmall,
                 modifier = Modifier
                     .width(300.dp),
@@ -191,6 +223,25 @@ fun RegisterScreen (
                 Text(
                     text = "Já possuo uma conta"
                 )
+            }
+
+
+
+            if (uiState.errorMessage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Card (
+                    colors = CardColors(
+                        MaterialTheme.colorScheme.errorContainer,
+                        MaterialTheme.colorScheme.error,
+                        Color(0xFFFFFFFF),
+                        Color(0xFFFFFFFF))
+                ) {
+                    Text (
+                        modifier = Modifier
+                            .padding(8.dp),
+                        text = uiState.errorMessage.toString()
+                    )
+                }
             }
         }
     }
