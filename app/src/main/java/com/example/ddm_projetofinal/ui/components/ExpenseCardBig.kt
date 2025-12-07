@@ -1,6 +1,5 @@
 package com.example.ddm_projetofinal.ui.components
 
-import android.graphics.Paint.Align
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Commute
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Home
@@ -26,26 +25,30 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ddm_projetofinal.model.Expense
+import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.expense1
 import com.example.ddm_projetofinal.model.expense2
 import com.example.ddm_projetofinal.model.expense3
 import com.example.ddm_projetofinal.model.expense4
 
+
 @Composable
 fun ExpenseCardBig (
-    expenseInfo: Expense
+    expenseInfo: Expense,
+    onReturn: () -> Unit,
+    onDelete: (User) -> Unit
 ) {
     Card (
         border = BorderStroke(1.dp, Color(0xFFC9C3CF)),
@@ -56,8 +59,13 @@ fun ExpenseCardBig (
             Color(0xFF000000)
         ),
         modifier = Modifier
-            .fillMaxWidth()
+            .width(330.dp)
             .height(400.dp)
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(16.dp),
+                clip = false
+            )
     ) {
         Column (
             modifier = Modifier
@@ -124,7 +132,9 @@ fun ExpenseCardBig (
                 verticalAlignment = Alignment.Bottom
             ) {
                 IconButton (
-                    onClick = {}
+                    onClick = {
+                        onReturn()
+                    }
                 ) {
                     Icon (
                         modifier = Modifier
@@ -134,7 +144,9 @@ fun ExpenseCardBig (
                     )
                 }
                 IconButton (
-                    onClick = {}
+                    onClick = {
+                        onDelete
+                    }
                 ) {
                     Icon (
                         modifier = Modifier
@@ -151,20 +163,20 @@ fun ExpenseCardBig (
 @Preview
 @Composable
 fun ExpenseCardBigPreview1 () {
-    ExpenseCardBig(expense1)
+    ExpenseCardBig(expense1, {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview2 () {
-    ExpenseCardBig(expense2)
+    ExpenseCardBig(expense2, {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview3 () {
-    ExpenseCardBig(expense3)
+    ExpenseCardBig(expense3, {}, {})
 }
 @Preview
 @Composable
 fun ExpenseCardBigPreview4 () {
-    ExpenseCardBig(expense4)
+    ExpenseCardBig(expense4, {}, {})
 }

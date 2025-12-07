@@ -73,10 +73,10 @@ fun ExpenseCardSmall (
                     else -> Icons.Default.Clear
                 },
                 contentDescription = when (expenseInfo.type) {
-                    "Comida" -> "Ícone de um rosto"
+                    "Comida" -> "Ícone de um lanche de fastfood"
                     "Transporte" -> "Ícone de um carrinho de compras"
                     "Estadia" -> "Ícone de uma casa"
-                    "Outros" -> "Ícone de três pontos verticais"
+                    "Outros" -> "Ícone de três pontos horizontais"
                     else -> "Ícone de um X"
                 },
                 modifier = Modifier
