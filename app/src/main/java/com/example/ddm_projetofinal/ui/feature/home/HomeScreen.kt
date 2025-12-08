@@ -197,9 +197,9 @@ fun HomeScreen (
                     items(
                         items = if (uiState.recentExpenses.size >= 3 ) {
                             listOf(
-                                uiState.recentExpenses.get(0),
-                                uiState.recentExpenses.get(1),
-                                uiState.recentExpenses.get(2)
+                                uiState.recentExpenses.get(uiState.recentExpenses.lastIndex),
+                                uiState.recentExpenses.get(uiState.recentExpenses.lastIndex - 1),
+                                uiState.recentExpenses.get(uiState.recentExpenses.lastIndex - 2)
                             )
                         } else {
                             uiState.recentExpenses

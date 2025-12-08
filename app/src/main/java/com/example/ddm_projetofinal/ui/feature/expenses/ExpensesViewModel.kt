@@ -38,6 +38,13 @@ class ExpensesViewModel : ViewModel() {
         )
     }
 
+    fun disperseMessage () {
+        _uiState.value = _uiState.value.copy(
+            message = "",
+            error = null
+        )
+    }
+
     fun getRecentTrips (userId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)

@@ -44,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -94,6 +95,11 @@ fun ExpensesScreen (
 
     viewModel.getExpenses(userInfo.id)
     viewModel.getRecentTrips(userInfo.id)
+
+    LaunchedEffect(uiState.message.isNotBlank() && uiState.error != null) {
+        kotlinx.coroutines.delay(3000)
+        viewModel.disperseMessage()
+    }
 
     Scaffold (
         modifier = Modifier
