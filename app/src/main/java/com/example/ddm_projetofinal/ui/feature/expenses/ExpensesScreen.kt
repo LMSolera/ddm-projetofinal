@@ -32,7 +32,6 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +51,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -63,7 +61,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.Trip
@@ -73,14 +70,12 @@ import com.example.ddm_projetofinal.model.expense2
 import com.example.ddm_projetofinal.model.expense3
 import com.example.ddm_projetofinal.model.expense4
 import com.example.ddm_projetofinal.model.user1
-import com.example.ddm_projetofinal.navigation.TripsRoute
 import com.example.ddm_projetofinal.ui.components.BottomMenuElement
 import com.example.ddm_projetofinal.ui.components.ExpenseCardBig
 import com.example.ddm_projetofinal.ui.components.ExpenseCardSmall
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.exp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

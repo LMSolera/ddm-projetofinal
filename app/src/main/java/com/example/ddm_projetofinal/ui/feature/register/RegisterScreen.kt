@@ -43,11 +43,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ddm_projetofinal.data.local.UserLocalDatabase
 import com.example.ddm_projetofinal.data.local.UserLocalDatabaseProvider
 import com.example.ddm_projetofinal.data.local.UserLocalRepositoryImpl
 import com.example.ddm_projetofinal.model.User
-import com.example.ddm_projetofinal.model.user2
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

@@ -3,8 +3,6 @@ package com.example.ddm_projetofinal.data.api
 import com.example.ddm_projetofinal.data.entity.ExpenseEntity
 import com.example.ddm_projetofinal.data.entity.TripEntity
 import com.example.ddm_projetofinal.data.entity.UserEntity
-import com.example.ddm_projetofinal.model.Trip
-import com.example.ddm_projetofinal.model.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

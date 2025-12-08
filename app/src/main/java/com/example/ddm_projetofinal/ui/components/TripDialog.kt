@@ -1,6 +1,5 @@
 package com.example.ddm_projetofinal.ui.components
 
-import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,19 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ddm_projetofinal.model.Trip
 import com.example.ddm_projetofinal.model.trip1
 import com.example.ddm_projetofinal.model.trip3
-
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.example.ddm_projetofinal.ui.feature.expenses.convertMillisToDate
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

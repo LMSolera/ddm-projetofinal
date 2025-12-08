@@ -1,19 +1,14 @@
 package com.example.ddm_projetofinal.ui.feature.expenses
 
-import android.util.Log
-import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.data.repository.AppRepositoryImpl
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.Trip
-import com.example.ddm_projetofinal.ui.feature.trips.TripsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.math.exp
 
 data class ExpensesUiState (
     val isLoading: Boolean = false,

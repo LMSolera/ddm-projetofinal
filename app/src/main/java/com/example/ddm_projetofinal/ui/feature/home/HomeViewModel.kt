@@ -2,16 +2,13 @@ package com.example.ddm_projetofinal.ui.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.data.repository.AppRepositoryImpl
 import com.example.ddm_projetofinal.model.Expense
 import com.example.ddm_projetofinal.model.Trip
-import com.example.ddm_projetofinal.ui.feature.login.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.net.IDN
 
 data class HomeUiState (
     val isLoading: Boolean = false,

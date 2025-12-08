@@ -1,13 +1,8 @@
 package com.example.ddm_projetofinal.ui.feature.register
 
-import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ddm_projetofinal.data.local.UserLocalDao
 import com.example.ddm_projetofinal.data.local.UserLocalRepository
-import com.example.ddm_projetofinal.data.local.UserLocalRepositoryImpl
-import com.example.ddm_projetofinal.data.repository.AppRepository
 import com.example.ddm_projetofinal.data.repository.AppRepositoryImpl
 import com.example.ddm_projetofinal.model.User
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,15 +1,10 @@
 package com.example.ddm_projetofinal.ui.feature.userpage
 
-import android.media.session.MediaSessionManager.RemoteUserInfo
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ddm_projetofinal.data.local.UserLocalRepository
 import com.example.ddm_projetofinal.data.repository.AppRepositoryImpl
-import com.example.ddm_projetofinal.model.Trip
 import com.example.ddm_projetofinal.model.User
-import com.example.ddm_projetofinal.ui.feature.login.LoginUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

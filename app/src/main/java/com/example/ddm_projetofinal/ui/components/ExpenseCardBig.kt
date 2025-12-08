@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ddm_projetofinal.model.Expense
-import com.example.ddm_projetofinal.model.User
 import com.example.ddm_projetofinal.model.expense1
 import com.example.ddm_projetofinal.model.expense2
 import com.example.ddm_projetofinal.model.expense3
